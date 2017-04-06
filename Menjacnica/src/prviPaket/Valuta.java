@@ -14,25 +14,43 @@ public class Valuta {
 		return naziv;
 	}
 	public void setNaziv(String naziv) {
+		if(naziv==null||naziv.equals(null))
+			throw new RuntimeException("Niste uneli naziv!");
 		this.naziv = naziv;
 	}
 	public String getSkraceniNaziv() {
 		return skraceniNaziv;
 	}
 	public void setSkraceniNaziv(String skraceniNaziv) {
+		if(skraceniNaziv==null||skraceniNaziv.equals(null))
+			throw new RuntimeException("Niste uneli skraceni naziv!");
+		if(skraceniNaziv.length()!=3)
+			throw new RuntimeException("Skraceni naziv mora sadrzati 3 slova!");
 		this.skraceniNaziv = skraceniNaziv;
 	}
 	public GregorianCalendar getDatum() {
 		return datum;
 	}
-	public void setDatum(GregorianCalendar datum) {
-		this.datum = datum;
+	public void setDatum(int dan, int mesec, int godina) {
+		if(dan<=0||mesec<=0||godina<=0)
+			throw new RuntimeException("Dan, mesec ili godina ne smeju biti manji ili jednaki 0!");
+		GregorianCalendar pomocni = new GregorianCalendar(godina, mesec-1, dan);
+		if(pomocni.after(new GregorianCalendar()))
+			throw new RuntimeException("Ne mozete uneti kurs za dan koji ce tek doci!");
+		this.datum=pomocni;
 	}
+	
 	public double[] getKurs() {
 		return kurs;
 	}
-	public void setKurs(double[] kurs) {
-		this.kurs = kurs;
+	public void setKurs(double kupovni, double srednji, double prodajni) {
+		if(kupovni<=0||srednji<=0||prodajni<=0)
+			throw new RuntimeException("Kurs ne sme biti manji ili jednak 0!");
+		if(kupovni>=srednji||srednji>=prodajni)
+			throw new RuntimeException("Kupovni kurs ne sme biti veci ili jednak niti srednjem niti prodajnom kursu, a prodajni ne sme biti manji ili jednak niti srednjem niti kupovnom kursu!");
+		this.kurs[0]=kupovni;
+		this.kurs[1]=srednji;
+		this.kurs[2]=prodajni;
 	}
 	
 	public int hashCode() {
@@ -52,32 +70,17 @@ public class Valuta {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Valuta other = (Valuta) obj;
-		if (datum == null) {
-			if (other.datum != null)
-				return false;
-		} else if (!datum.equals(other.datum))
-			return false;
-		if (!Arrays.equals(kurs, other.kurs))
-			return false;
-		if (naziv == null) {
-			if (other.naziv != null)
-				return false;
-		} else if (!naziv.equals(other.naziv))
-			return false;
-		if (skraceniNaziv == null) {
-			if (other.skraceniNaziv != null)
-				return false;
-		} else if (!skraceniNaziv.equals(other.skraceniNaziv))
-			return false;
-		return true;
+		Valuta v = (Valuta) obj;
+		if(getNaziv().equals(v.getNaziv())&&getSkraceniNaziv().equals(v.getSkraceniNaziv())&&getDatum().equals(v.getDatum()))
+			return true;
+		return false;
 	}
 	
 	public String toString() {
-		return "Valuta [naziv=" + naziv + ", skraceniNaziv=" + skraceniNaziv + ", datum=" + datum + ", kurs="
-				+ Arrays.toString(kurs) + "]";
+		double[] kurs2 = getKurs();
+		return "Naziv: " + getNaziv() + "\t Oznaka: " + getSkraceniNaziv() + "\t Datum kursa: "+ getDatum().get(GregorianCalendar.DAY_OF_MONTH) +
+		"." + (getDatum().get(GregorianCalendar.MONTH)+1) + "." + getDatum().get(GregorianCalendar.YEAR) + "\t Kupovni:" + kurs2[0] + "\t Srednji: "+ kurs2[1] + "\t Prodajni: " + kurs2[2];
 	}
-	
 	
 	
 }
