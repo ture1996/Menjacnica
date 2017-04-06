@@ -82,5 +82,11 @@ public class Valuta {
 		"." + (getDatum().get(GregorianCalendar.MONTH)+1) + "." + getDatum().get(GregorianCalendar.YEAR) + "\t Kupovni:" + kurs2[0] + "\t Srednji: "+ kurs2[1] + "\t Prodajni: " + kurs2[2];
 	}
 	
+	public Valuta(String naziv, String skraceniNaziv,int dan,int mesec,int godina, double kupovni , double srednji, double prodajni){
+		setNaziv(naziv);
+		setSkraceniNaziv(skraceniNaziv);
+		setDatum(dan,mesec,godina);
+		setKurs(kupovni,srednji,prodajni);
+	}
 	
 }
